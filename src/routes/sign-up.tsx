@@ -2,18 +2,18 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { SiteNav } from "@/components/SiteNav";
 import { SiteFooter } from "@/components/SiteFooter";
-import { signInWithEmail, signInWithGoogle } from "@/lib/auth";
+import { signUpWithEmail, signInWithGoogle } from "@/lib/auth";
 
-export const Route = createFileRoute("/sign-in")({
+export const Route = createFileRoute("/sign-up")({
   head: () => ({
     meta: [
-      { title: "Sign In — Vocalo" },
-      { name: "description", content: "Sign in to save your vocal profile and recommendations." },
-      { property: "og:title", content: "Sign in to Vocalo" },
-      { property: "og:description", content: "Save your vocal profile and personalized song library." },
+      { title: "Sign Up — Vocalo" },
+      { name: "description", content: "Create your Vocalo account to save your vocal profile and recommendations." },
+      { property: "og:title", content: "Join Vocalo" },
+      { property: "og:description", content: "Create your account and discover your perfect singing style." },
     ],
   }),
-  component: SignIn,
+  component: SignUp,
 });
 
 type Status =
@@ -22,21 +22,30 @@ type Status =
   | { kind: "success"; email: string }
   | { kind: "error"; message: string };
 
-function SignIn() {
+function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const navigate = useNavigate();
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    if (password !== confirmPassword) {
+      setStatus({ kind: "error", message: "Passwords do not match." });
+      return;
+    }
+    if (password.length < 6) {
+      setStatus({ kind: "error", message: "Password must be at least 6 characters." });
+      return;
+    }
     setStatus({ kind: "loading" });
     try {
-      await signInWithEmail(email.trim(), password);
+      await signUpWithEmail(email.trim(), password);
       setStatus({ kind: "success", email });
-      setTimeout(() => navigate({ to: "/sample-results" }), 800);
+      setTimeout(() => navigate({ to: "/sign-in" }), 2500);
     } catch (err) {
-      const msg = err instanceof Error ? err.message : "Sign in failed. Please try again.";
+      const msg = err instanceof Error ? err.message : "Sign up failed. Please try again.";
       setStatus({ kind: "error", message: msg });
     }
   }
@@ -69,25 +78,26 @@ function SignIn() {
                   <div className="size-16 mx-auto rounded-full bg-emerald-500/15 border border-emerald-400/40 grid place-items-center text-3xl mb-5">
                     ✓
                   </div>
-                  <h1 className="text-2xl font-extrabold mb-2">Welcome back</h1>
+                  <h1 className="text-2xl font-extrabold mb-2">Check your email</h1>
                   <p className="text-sm text-muted-foreground mb-1">
-                    Signed in as <span className="text-foreground font-medium">{status.email}</span>
+                    We sent a confirmation link to{" "}
+                    <span className="text-foreground font-medium">{status.email}</span>
                   </p>
                   <p className="text-xs font-mono-display uppercase tracking-widest text-accent mt-4">
-                    Loading your profile…
+                    Redirecting to sign in…
                   </p>
                 </div>
               ) : (
                 <>
                   <div className="text-center mb-8">
                     <span className="font-mono-display uppercase tracking-[0.25em] text-xs text-accent">
-                      Welcome Back
+                      Get Started
                     </span>
                     <h1 className="text-3xl font-extrabold mt-3 mb-2">
-                      Sign in to <span className="text-gradient-brand">Vocalo</span>
+                      Join <span className="text-gradient-brand">Vocalo</span>
                     </h1>
                     <p className="text-sm text-muted-foreground">
-                      Save your vocal profile and pick up where you left off.
+                      Create an account to save your vocal profile and song recommendations.
                     </p>
                   </div>
 
@@ -119,19 +129,30 @@ function SignIn() {
                     </div>
 
                     <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <label className="text-xs font-mono-display uppercase tracking-widest text-muted-foreground">
-                          Password
-                        </label>
-                        <button type="button" className="text-xs text-accent hover:underline">
-                          Forgot?
-                        </button>
-                      </div>
+                      <label className="text-xs font-mono-display uppercase tracking-widest text-muted-foreground">
+                        Password
+                      </label>
                       <input
                         type="password"
                         required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
+                        placeholder="••••••••"
+                        className={`w-full px-4 py-3 bg-background border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition ${
+                          isError ? "border-destructive/50 focus:ring-destructive" : "border-border focus:ring-brand"
+                        }`}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-mono-display uppercase tracking-widest text-muted-foreground">
+                        Confirm Password
+                      </label>
+                      <input
+                        type="password"
+                        required
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="••••••••"
                         className={`w-full px-4 py-3 bg-background border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition ${
                           isError ? "border-destructive/50 focus:ring-destructive" : "border-border focus:ring-brand"
@@ -147,10 +168,10 @@ function SignIn() {
                       {isLoading ? (
                         <>
                           <span className="size-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
-                          Signing in…
+                          Creating account…
                         </>
                       ) : (
-                        "Sign In"
+                        "Create Account"
                       )}
                     </button>
                   </form>
@@ -189,9 +210,9 @@ function SignIn() {
                   </button>
 
                   <p className="mt-8 text-center text-sm text-muted-foreground">
-                    New to Vocalo?{" "}
-                    <Link to="/sign-up" className="text-accent hover:underline font-semibold">
-                      Create an account
+                    Already have an account?{" "}
+                    <Link to="/sign-in" className="text-accent hover:underline font-semibold">
+                      Sign in
                     </Link>
                   </p>
                 </>
