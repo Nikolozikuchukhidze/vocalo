@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as VocalTestRouteImport } from './routes/vocal-test'
 import { Route as TrainRouteImport } from './routes/train'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as SampleResultsRouteImport } from './routes/sample-results'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
@@ -30,6 +31,11 @@ const TrainRoute = TrainRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignUpRoute = SignUpRouteImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SignInRoute = SignInRouteImport.update({
@@ -58,6 +64,7 @@ export interface FileRoutesByFullPath {
   '/how-it-works': typeof HowItWorksRoute
   '/sample-results': typeof SampleResultsRoute
   '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/train': typeof TrainRoute
   '/vocal-test': typeof VocalTestRoute
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/how-it-works': typeof HowItWorksRoute
   '/sample-results': typeof SampleResultsRoute
   '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/train': typeof TrainRoute
   '/vocal-test': typeof VocalTestRoute
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/how-it-works': typeof HowItWorksRoute
   '/sample-results': typeof SampleResultsRoute
   '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/train': typeof TrainRoute
   '/vocal-test': typeof VocalTestRoute
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/sample-results'
     | '/sign-in'
+    | '/sign-up'
     | '/sitemap.xml'
     | '/train'
     | '/vocal-test'
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/sample-results'
     | '/sign-in'
+    | '/sign-up'
     | '/sitemap.xml'
     | '/train'
     | '/vocal-test'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/sample-results'
     | '/sign-in'
+    | '/sign-up'
     | '/sitemap.xml'
     | '/train'
     | '/vocal-test'
@@ -116,6 +128,7 @@ export interface RootRouteChildren {
   HowItWorksRoute: typeof HowItWorksRoute
   SampleResultsRoute: typeof SampleResultsRoute
   SignInRoute: typeof SignInRoute
+  SignUpRoute: typeof SignUpRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TrainRoute: typeof TrainRoute
   VocalTestRoute: typeof VocalTestRoute
@@ -142,6 +155,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sign-up': {
+      id: '/sign-up'
+      path: '/sign-up'
+      fullPath: '/sign-up'
+      preLoaderRoute: typeof SignUpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sign-in': {
@@ -180,6 +200,7 @@ const rootRouteChildren: RootRouteChildren = {
   HowItWorksRoute: HowItWorksRoute,
   SampleResultsRoute: SampleResultsRoute,
   SignInRoute: SignInRoute,
+  SignUpRoute: SignUpRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TrainRoute: TrainRoute,
   VocalTestRoute: VocalTestRoute,
@@ -187,3 +208,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
