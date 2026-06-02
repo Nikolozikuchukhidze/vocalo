@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteNav } from "@/components/SiteNav";
 import { SiteFooter } from "@/components/SiteFooter";
-import heroImg from "@/assets/hero-visualizer.jpg";
+import { HeroVisualizer } from "@/components/HeroVisualizer";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -61,28 +62,26 @@ function Index() {
               artist, and karaoke recommendations in seconds.
             </p>
             <div className="flex flex-wrap gap-4">
-              <button className="px-8 py-4 bg-brand hover:bg-brand/90 text-primary-foreground rounded-2xl font-bold shadow-glow-brand transition-all flex items-center gap-3">
+              <Link
+                to="/vocal-test"
+                className="px-8 py-4 bg-brand hover:bg-brand/90 text-primary-foreground rounded-2xl font-bold shadow-glow-brand transition-all flex items-center gap-3"
+              >
                 Start Vocal Test
                 <span className="text-xl">→</span>
-              </button>
-              <button className="px-8 py-4 bg-surface hover:bg-surface/70 text-foreground rounded-2xl font-bold transition-all border border-border">
+              </Link>
+              <Link
+                to="/sample-results"
+                className="px-8 py-4 bg-surface hover:bg-surface/70 text-foreground rounded-2xl font-bold transition-all border border-border"
+              >
                 View Sample Results
-              </button>
+              </Link>
             </div>
           </div>
 
           <div className="relative">
-            <div className="absolute -inset-6 bg-gradient-brand blur-3xl opacity-30" />
-            <div className="relative w-full aspect-square rounded-3xl border border-border overflow-hidden backdrop-blur-xl">
-              <img
-                src={heroImg}
-                alt="Neon soundwave visualization around a studio microphone"
-                width={1024}
-                height={1024}
-                className="w-full h-full object-cover"
-              />
-            </div>
+            <HeroVisualizer />
           </div>
+
         </div>
       </main>
 

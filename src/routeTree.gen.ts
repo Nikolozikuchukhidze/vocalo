@@ -9,11 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VocalTestRouteImport } from './routes/vocal-test'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SignInRouteImport } from './routes/sign-in'
+import { Route as SampleResultsRouteImport } from './routes/sample-results'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as IndexRouteImport } from './routes/index'
 
+const VocalTestRoute = VocalTestRouteImport.update({
+  id: '/vocal-test',
+  path: '/vocal-test',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -22,6 +29,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const SignInRoute = SignInRouteImport.update({
   id: '/sign-in',
   path: '/sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SampleResultsRoute = SampleResultsRouteImport.update({
+  id: '/sample-results',
+  path: '/sample-results',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HowItWorksRoute = HowItWorksRouteImport.update({
@@ -38,39 +50,73 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/sample-results': typeof SampleResultsRoute
   '/sign-in': typeof SignInRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/vocal-test': typeof VocalTestRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/sample-results': typeof SampleResultsRoute
   '/sign-in': typeof SignInRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/vocal-test': typeof VocalTestRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/how-it-works': typeof HowItWorksRoute
+  '/sample-results': typeof SampleResultsRoute
   '/sign-in': typeof SignInRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/vocal-test': typeof VocalTestRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/how-it-works' | '/sign-in' | '/sitemap.xml'
+  fullPaths:
+    | '/'
+    | '/how-it-works'
+    | '/sample-results'
+    | '/sign-in'
+    | '/sitemap.xml'
+    | '/vocal-test'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/how-it-works' | '/sign-in' | '/sitemap.xml'
-  id: '__root__' | '/' | '/how-it-works' | '/sign-in' | '/sitemap.xml'
+  to:
+    | '/'
+    | '/how-it-works'
+    | '/sample-results'
+    | '/sign-in'
+    | '/sitemap.xml'
+    | '/vocal-test'
+  id:
+    | '__root__'
+    | '/'
+    | '/how-it-works'
+    | '/sample-results'
+    | '/sign-in'
+    | '/sitemap.xml'
+    | '/vocal-test'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HowItWorksRoute: typeof HowItWorksRoute
+  SampleResultsRoute: typeof SampleResultsRoute
   SignInRoute: typeof SignInRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  VocalTestRoute: typeof VocalTestRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vocal-test': {
+      id: '/vocal-test'
+      path: '/vocal-test'
+      fullPath: '/vocal-test'
+      preLoaderRoute: typeof VocalTestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -83,6 +129,13 @@ declare module '@tanstack/react-router' {
       path: '/sign-in'
       fullPath: '/sign-in'
       preLoaderRoute: typeof SignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sample-results': {
+      id: '/sample-results'
+      path: '/sample-results'
+      fullPath: '/sample-results'
+      preLoaderRoute: typeof SampleResultsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/how-it-works': {
@@ -105,8 +158,10 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HowItWorksRoute: HowItWorksRoute,
+  SampleResultsRoute: SampleResultsRoute,
   SignInRoute: SignInRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  VocalTestRoute: VocalTestRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
