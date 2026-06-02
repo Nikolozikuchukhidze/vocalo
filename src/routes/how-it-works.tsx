@@ -77,12 +77,13 @@ function HowItWorks() {
 
         <div className="mt-20 text-center">
           <Link
-            to="/"
+            to="/vocal-test"
             className="inline-flex items-center gap-3 px-8 py-4 bg-brand hover:bg-brand/90 text-primary-foreground rounded-2xl font-bold shadow-glow-brand transition-all"
           >
             Start Vocal Test
             <span className="text-xl">→</span>
           </Link>
+
         </div>
       </main>
 

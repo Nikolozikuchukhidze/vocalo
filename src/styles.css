@@ -120,3 +120,15 @@
   transform-origin: bottom;
   animation: eq-bounce 1.2s ease-in-out infinite;
 }
+
+@keyframes pulse-ring {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.08); }
+}
+
+@keyframes mic-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--brand) 50%, transparent); }
+  50% { box-shadow: 0 0 0 30px color-mix(in oklab, var(--brand) 0%, transparent); }
+}
+.mic-pulse { animation: mic-pulse 1.6s ease-out infinite; }
+
