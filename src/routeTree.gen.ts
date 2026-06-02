@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VocalTestRouteImport } from './routes/vocal-test'
+import { Route as TrainRouteImport } from './routes/train'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as SampleResultsRouteImport } from './routes/sample-results'
@@ -19,6 +20,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const VocalTestRoute = VocalTestRouteImport.update({
   id: '/vocal-test',
   path: '/vocal-test',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrainRoute = TrainRouteImport.update({
+  id: '/train',
+  path: '/train',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -53,6 +59,7 @@ export interface FileRoutesByFullPath {
   '/sample-results': typeof SampleResultsRoute
   '/sign-in': typeof SignInRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/train': typeof TrainRoute
   '/vocal-test': typeof VocalTestRoute
 }
 export interface FileRoutesByTo {
@@ -61,6 +68,7 @@ export interface FileRoutesByTo {
   '/sample-results': typeof SampleResultsRoute
   '/sign-in': typeof SignInRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/train': typeof TrainRoute
   '/vocal-test': typeof VocalTestRoute
 }
 export interface FileRoutesById {
@@ -70,6 +78,7 @@ export interface FileRoutesById {
   '/sample-results': typeof SampleResultsRoute
   '/sign-in': typeof SignInRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/train': typeof TrainRoute
   '/vocal-test': typeof VocalTestRoute
 }
 export interface FileRouteTypes {
@@ -80,6 +89,7 @@ export interface FileRouteTypes {
     | '/sample-results'
     | '/sign-in'
     | '/sitemap.xml'
+    | '/train'
     | '/vocal-test'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -88,6 +98,7 @@ export interface FileRouteTypes {
     | '/sample-results'
     | '/sign-in'
     | '/sitemap.xml'
+    | '/train'
     | '/vocal-test'
   id:
     | '__root__'
@@ -96,6 +107,7 @@ export interface FileRouteTypes {
     | '/sample-results'
     | '/sign-in'
     | '/sitemap.xml'
+    | '/train'
     | '/vocal-test'
   fileRoutesById: FileRoutesById
 }
@@ -105,6 +117,7 @@ export interface RootRouteChildren {
   SampleResultsRoute: typeof SampleResultsRoute
   SignInRoute: typeof SignInRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TrainRoute: typeof TrainRoute
   VocalTestRoute: typeof VocalTestRoute
 }
 
@@ -115,6 +128,13 @@ declare module '@tanstack/react-router' {
       path: '/vocal-test'
       fullPath: '/vocal-test'
       preLoaderRoute: typeof VocalTestRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/train': {
+      id: '/train'
+      path: '/train'
+      fullPath: '/train'
+      preLoaderRoute: typeof TrainRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -161,6 +181,7 @@ const rootRouteChildren: RootRouteChildren = {
   SampleResultsRoute: SampleResultsRoute,
   SignInRoute: SignInRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TrainRoute: TrainRoute,
   VocalTestRoute: VocalTestRoute,
 }
 export const routeTree = rootRouteImport

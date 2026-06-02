@@ -13,6 +13,13 @@ export function SiteNav() {
         >
           How it Works
         </Link>
+        <Link
+          to="/train"
+          className="hover:text-foreground transition-colors"
+          activeProps={{ className: "text-foreground" }}
+        >
+          Train
+        </Link>
       </div>
       <Link
         to="/sign-in"
