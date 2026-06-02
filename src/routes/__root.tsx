@@ -81,6 +81,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Record your voice and get personalized genre, artist, and karaoke recommendations." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:title", content: "Vocalo — Discover Your Perfect Singing Style" },
+      { name: "twitter:title", content: "Vocalo — Discover Your Perfect Singing Style" },
+      { property: "og:description", content: "Record your voice and get personalized genre, artist, and karaoke recommendations." },
+      { name: "twitter:description", content: "Record your voice and get personalized genre, artist, and karaoke recommendations." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/960423d9-2b85-43f3-b4b8-d3d5ac656885/id-preview-db87512a--5f50ab77-7669-45b3-8051-41002c6e33dd.lovable.app-1780387157345.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/960423d9-2b85-43f3-b4b8-d3d5ac656885/id-preview-db87512a--5f50ab77-7669-45b3-8051-41002c6e33dd.lovable.app-1780387157345.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
