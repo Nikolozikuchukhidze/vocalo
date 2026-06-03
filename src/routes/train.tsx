@@ -191,13 +191,28 @@ function TrainPage() {
         // octave-agnostic compare
         const diffSemi = ((midi - targetMidi) % 12 + 12) % 12;
         const dist = Math.min(diffSemi, 12 - diffSemi);
-        if (dist < 0.5 && Date.now() - lastHitRef.current > 800) {
-          lastHitRef.current = Date.now();
-          setHitFlash(true);
-          setTimeout(() => setHitFlash(false), 400);
-          setTargetDegree((d) => (d + 1) % 7);
+        const now = Date.now();
+        const onPitch = dist < 0.7;
+        if (onPitch) {
+          if (holdStartRef.current === 0) holdStartRef.current = now;
+          const heldFor = now - holdStartRef.current;
+          setHoldProgress(Math.min(1, heldFor / holdMsRef.current));
+          if (heldFor >= holdMsRef.current && now - lastHitRef.current > 300) {
+            lastHitRef.current = now;
+            holdStartRef.current = 0;
+            setHoldProgress(0);
+            setHitFlash(true);
+            setTimeout(() => setHitFlash(false), 400);
+            setTargetDegree((d) => (d + 1) % 7);
+          }
+        } else {
+          holdStartRef.current = 0;
+          setHoldProgress(0);
         }
         void targetFreq;
+      } else {
+        holdStartRef.current = 0;
+        setHoldProgress(0);
       }
 
       if (frame % 20 === 0) {
