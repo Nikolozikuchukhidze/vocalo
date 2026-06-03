@@ -122,6 +122,23 @@ function SignUp() {
                   <form className="space-y-5" onSubmit={onSubmit}>
                     <div className="space-y-2">
                       <label className="text-xs font-mono-display uppercase tracking-widest text-muted-foreground">
+                        Username
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        autoComplete="username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="your_handle"
+                        className={`w-full px-4 py-3 bg-background border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition ${
+                          isError ? "border-destructive/50 focus:ring-destructive" : "border-border focus:ring-brand"
+                        }`}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-xs font-mono-display uppercase tracking-widest text-muted-foreground">
                         Email
                       </label>
                       <input
