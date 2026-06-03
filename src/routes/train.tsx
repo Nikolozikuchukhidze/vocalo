@@ -106,6 +106,8 @@ function TrainPage() {
   const [targetKey, setTargetKey] = useState(KEY_OPTIONS[0]);
   const [targetDegree, setTargetDegree] = useState(0); // index in scale
   const [hitFlash, setHitFlash] = useState(false);
+  const [holdMs, setHoldMs] = useState(1000); // how long to sustain target before advancing
+  const [holdProgress, setHoldProgress] = useState(0); // 0..1
 
   const streamRef = useRef<MediaStream | null>(null);
   const ctxRef = useRef<AudioContext | null>(null);
@@ -113,6 +115,8 @@ function TrainPage() {
   const rafRef = useRef<number | null>(null);
   const histRef = useRef<number[]>(new Array(12).fill(0));
   const lastHitRef = useRef<number>(0);
+  const holdStartRef = useRef<number>(0);
+  const holdMsRef = useRef<number>(1000);
 
   const stop = () => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
