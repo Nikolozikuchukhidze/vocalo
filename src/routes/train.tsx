@@ -241,61 +241,103 @@ function TrainPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <SiteNav />
-      <main className="flex-1 px-6 py-12 max-w-5xl mx-auto w-full">
-        <div className="text-center mb-10">
-          <span className="font-mono-display uppercase tracking-[0.3em] text-xs text-accent">Live Trainer</span>
-          <h1 className="font-display text-4xl md:text-5xl font-extrabold mt-3 mb-3">
+      <main className="flex-1 px-4 sm:px-6 py-8 sm:py-12 max-w-5xl mx-auto w-full">
+        <div className="text-center mb-8 sm:mb-10">
+          <span className="font-mono-display uppercase tracking-[0.3em] text-[10px] sm:text-xs text-accent">Live Trainer</span>
+          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold mt-3 mb-3">
             Sing. We'll find your key.
           </h1>
-          <p className="text-muted-foreground max-w-xl mx-auto">
+          <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto px-2">
             Vocalo listens in real time, tells you the note and key you're singing, and feeds you the next target note in any scale.
           </p>
         </div>
 
         {/* Live note display */}
-        <div className={`relative rounded-3xl border ${hitFlash ? "border-accent shadow-glow-brand" : "border-border"} bg-surface/70 backdrop-blur-xl p-8 md:p-12 mb-8 transition-all`}>
-          <div className="grid md:grid-cols-2 gap-8">
+        <div className={`relative rounded-2xl sm:rounded-3xl border ${hitFlash ? "border-accent shadow-glow-brand" : "border-border"} bg-surface/70 backdrop-blur-xl p-5 sm:p-8 md:p-12 mb-6 sm:mb-8 transition-all`}>
+          <div className="grid grid-cols-2 gap-4 sm:gap-8">
             {/* Current */}
-            <div className="text-center">
-              <div className="font-mono-display uppercase tracking-widest text-xs text-muted-foreground mb-3">You are singing</div>
-              <div className="font-display text-7xl md:text-8xl font-extrabold tabular-nums bg-gradient-brand bg-clip-text text-transparent">
+            <div className="text-center min-w-0">
+              <div className="font-mono-display uppercase tracking-widest text-[10px] sm:text-xs text-muted-foreground mb-2 sm:mb-3">You sing</div>
+              <div className="font-display text-5xl sm:text-7xl md:text-8xl font-extrabold tabular-nums bg-gradient-brand bg-clip-text text-transparent leading-none">
                 {note ? `${note.name}${note.octave}` : "—"}
               </div>
-              <div className="text-sm text-muted-foreground mt-2 font-mono-display">
+              <div className="text-[11px] sm:text-sm text-muted-foreground mt-2 font-mono-display truncate">
                 {currentFreq > 0 ? `${currentFreq.toFixed(1)} Hz` : active ? "listening…" : "press start"}
               </div>
-              {/* Volume bar */}
-              <div className="mt-4 h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+              <div className="mt-3 sm:mt-4 h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
                 <div className="h-full bg-gradient-brand transition-all duration-75" style={{ width: `${level * 100}%` }} />
               </div>
             </div>
 
             {/* Target */}
-            <div className="text-center">
-              <div className="font-mono-display uppercase tracking-widest text-xs text-muted-foreground mb-3">Sing this next</div>
-              <div className="font-display text-7xl md:text-8xl font-extrabold tabular-nums text-foreground">
-                {targetNote.name}<span className="text-muted-foreground text-4xl align-top">{targetNote.octave}</span>
+            <div className="text-center min-w-0">
+              <div className="font-mono-display uppercase tracking-widest text-[10px] sm:text-xs text-muted-foreground mb-2 sm:mb-3">Sing next</div>
+              <div className="font-display text-5xl sm:text-7xl md:text-8xl font-extrabold tabular-nums text-foreground leading-none">
+                {targetNote.name}<span className="text-muted-foreground text-2xl sm:text-4xl align-top">{targetNote.octave}</span>
               </div>
-              <div className="text-sm text-muted-foreground mt-2 font-mono-display">
-                {targetFreq.toFixed(1)} Hz · degree {targetDegree + 1} of {targetKey.label}
+              <div className="text-[11px] sm:text-sm text-muted-foreground mt-2 font-mono-display truncate">
+                {targetFreq.toFixed(1)} Hz · {targetDegree + 1}/{scale.length}
               </div>
-              {/* Tuning meter */}
-              <div className="mt-4 relative h-6">
+              <div className="mt-3 sm:mt-4 relative h-6">
                 <div className="absolute inset-x-0 top-1/2 h-px bg-border" />
                 <div className="absolute left-1/2 top-0 bottom-0 w-px bg-accent" />
                 {note && (
                   <div
-                    className={`absolute top-1/2 -translate-y-1/2 size-4 rounded-full transition-all ${Math.abs(wrappedCents) < 15 ? "bg-accent shadow-glow-brand" : "bg-brand"}`}
+                    className={`absolute top-1/2 size-3 sm:size-4 rounded-full transition-all ${Math.abs(wrappedCents) < 15 ? "bg-accent shadow-glow-brand" : "bg-brand"}`}
                     style={{ left: `calc(50% + ${Math.max(-50, Math.min(50, wrappedCents / 2))}%)`, transform: "translate(-50%, -50%)" }}
                   />
                 )}
               </div>
-              <div className="text-xs text-muted-foreground mt-1 font-mono-display">
-                {note ? `${wrappedCents > 0 ? "+" : ""}${wrappedCents} cents` : "—"}
+              <div className="text-[10px] sm:text-xs text-muted-foreground mt-1 font-mono-display">
+                {note ? `${wrappedCents > 0 ? "+" : ""}${wrappedCents}¢` : "—"}
               </div>
             </div>
           </div>
+
+          {/* Hold progress */}
+          <div className="mt-5 sm:mt-6">
+            <div className="flex justify-between items-center mb-1.5">
+              <span className="font-mono-display uppercase tracking-widest text-[10px] sm:text-xs text-muted-foreground">Hold</span>
+              <span className="font-mono-display text-[10px] sm:text-xs text-muted-foreground tabular-nums">
+                {(holdProgress * (holdMs / 1000)).toFixed(1)}s / {(holdMs / 1000).toFixed(1)}s
+              </span>
+            </div>
+            <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+              <div className="h-full bg-gradient-brand transition-all duration-75" style={{ width: `${holdProgress * 100}%` }} />
+            </div>
+          </div>
         </div>
+
+        {/* Hold time picker */}
+        <div className="rounded-2xl border border-border bg-surface/70 p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+            <div className="font-mono-display uppercase tracking-widest text-[10px] sm:text-xs text-muted-foreground">
+              Hold note for
+            </div>
+            <div className="font-display text-2xl font-bold tabular-nums">{(holdMs / 1000).toFixed(1)}s</div>
+          </div>
+          <input
+            type="range"
+            min={300}
+            max={5000}
+            step={100}
+            value={holdMs}
+            onChange={(e) => setHoldMs(Number(e.target.value))}
+            className="w-full accent-[var(--brand)] h-2"
+          />
+          <div className="flex flex-wrap gap-2 mt-3">
+            {[500, 1000, 1500, 2000, 3000].map((ms) => (
+              <button
+                key={ms}
+                onClick={() => setHoldMs(ms)}
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${holdMs === ms ? "bg-gradient-brand text-primary-foreground border-transparent" : "bg-white/5 hover:bg-white/10 border-border"}`}
+              >
+                {ms / 1000}s
+              </button>
+            ))}
+          </div>
+        </div>
+
 
         {/* Detected key */}
         <div className="rounded-2xl border border-border bg-surface/70 p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
