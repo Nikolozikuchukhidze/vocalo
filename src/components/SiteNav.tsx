@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { VocaloLogo } from "./VocaloLogo";
 import { useAuth } from "@/hooks/use-auth";
 import { signOut } from "@/lib/auth";
@@ -12,6 +12,7 @@ import { LogOut, User } from "lucide-react";
 
 export function SiteNav() {
   const { user, isLoading } = useAuth();
+  const navigate = useNavigate();
 
   const displayName =
     user?.user_metadata?.display_name ||
@@ -67,6 +68,7 @@ export function SiteNav() {
               onClick={async () => {
                 try {
                   await signOut();
+                  navigate({ to: "/" });
                 } catch {
                   // ignore
                 }

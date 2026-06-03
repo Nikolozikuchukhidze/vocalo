@@ -41,9 +41,11 @@ function SignUp() {
     }
     setStatus({ kind: "loading" });
     try {
-      await signUpWithEmail(email.trim(), password);
+      const data = await signUpWithEmail(email.trim(), password);
       setStatus({ kind: "success", email });
-      setTimeout(() => navigate({ to: "/sign-in" }), 2500);
+      // If session exists (auto-confirm on), user is signed in immediately
+      const target = data?.session ? "/sample-results" : "/sign-in";
+      setTimeout(() => navigate({ to: target }), 800);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Sign up failed. Please try again.";
       setStatus({ kind: "error", message: msg });
