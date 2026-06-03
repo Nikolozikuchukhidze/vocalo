@@ -340,17 +340,17 @@ function TrainPage() {
 
 
         {/* Detected key */}
-        <div className="rounded-2xl border border-border bg-surface/70 p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="rounded-2xl border border-border bg-surface/70 p-4 sm:p-6 mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
           <div>
-            <div className="font-mono-display uppercase tracking-widest text-xs text-muted-foreground">Detected key</div>
-            <div className="font-display text-3xl font-bold mt-1">
+            <div className="font-mono-display uppercase tracking-widest text-[10px] sm:text-xs text-muted-foreground">Detected key</div>
+            <div className="font-display text-2xl sm:text-3xl font-bold mt-1">
               {detectedKey ? `${NOTE_NAMES[detectedKey.tonic]} ${detectedKey.mode}` : "Sing a few notes…"}
             </div>
           </div>
           {detectedKey && (
             <button
               onClick={() => setTargetKey({ label: `${NOTE_NAMES[detectedKey.tonic]} ${detectedKey.mode === "major" ? "Major" : "Minor"}`, tonic: detectedKey.tonic, mode: detectedKey.mode })}
-              className="px-5 py-2.5 bg-white/5 hover:bg-white/10 rounded-full text-sm font-semibold border border-border transition-all"
+              className="px-4 sm:px-5 py-2.5 bg-white/5 hover:bg-white/10 rounded-full text-xs sm:text-sm font-semibold border border-border transition-all whitespace-nowrap"
             >
               Train in this key →
             </button>
@@ -358,8 +358,8 @@ function TrainPage() {
         </div>
 
         {/* Key picker */}
-        <div className="rounded-2xl border border-border bg-surface/70 p-6 mb-8">
-          <div className="font-mono-display uppercase tracking-widest text-xs text-muted-foreground mb-4">Pick a key to practice</div>
+        <div className="rounded-2xl border border-border bg-surface/70 p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="font-mono-display uppercase tracking-widest text-[10px] sm:text-xs text-muted-foreground mb-3 sm:mb-4">Pick a key to practice</div>
           <div className="flex flex-wrap gap-2">
             {KEY_OPTIONS.map((k) => {
               const isActive = k.tonic === targetKey.tonic && k.mode === targetKey.mode;
@@ -367,7 +367,7 @@ function TrainPage() {
                 <button
                   key={k.label}
                   onClick={() => { setTargetKey(k); setTargetDegree(0); }}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold border transition-all ${isActive ? "bg-gradient-brand text-primary-foreground border-transparent shadow-glow-brand" : "bg-white/5 hover:bg-white/10 border-border"}`}
+                  className={`px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold border transition-all ${isActive ? "bg-gradient-brand text-primary-foreground border-transparent shadow-glow-brand" : "bg-white/5 hover:bg-white/10 border-border"}`}
                 >
                   {k.label}
                 </button>
@@ -375,7 +375,7 @@ function TrainPage() {
             })}
           </div>
           {/* Scale ladder */}
-          <div className="mt-6 flex flex-wrap gap-2">
+          <div className="mt-5 sm:mt-6 grid grid-cols-7 gap-1.5 sm:flex sm:flex-wrap sm:gap-2">
             {scale.map((deg, i) => {
               const m = 60 + targetKey.tonic + deg;
               const n = midiToNote(m);
@@ -383,9 +383,9 @@ function TrainPage() {
               return (
                 <div
                   key={i}
-                  className={`px-4 py-3 rounded-xl border font-mono-display text-sm min-w-16 text-center transition-all ${isCurrent ? "bg-accent/20 border-accent text-foreground" : "border-border text-muted-foreground"}`}
+                  className={`px-2 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border font-mono-display text-xs sm:text-sm sm:min-w-16 text-center transition-all ${isCurrent ? "bg-accent/20 border-accent text-foreground" : "border-border text-muted-foreground"}`}
                 >
-                  <div className="text-xs opacity-60">{i + 1}</div>
+                  <div className="text-[10px] sm:text-xs opacity-60">{i + 1}</div>
                   <div className="font-bold">{n.name}</div>
                 </div>
               );
@@ -398,33 +398,34 @@ function TrainPage() {
           {!active ? (
             <button
               onClick={start}
-              className="px-10 py-4 bg-brand hover:bg-brand/90 text-primary-foreground rounded-2xl font-bold shadow-glow-brand transition-all"
+              className="px-6 sm:px-10 py-4 bg-brand hover:bg-brand/90 text-primary-foreground rounded-2xl font-bold shadow-glow-brand transition-all"
             >
               🎙️ Start Live Training
             </button>
           ) : (
             <button
               onClick={stop}
-              className="px-10 py-4 bg-destructive hover:bg-destructive/90 text-primary-foreground rounded-2xl font-bold transition-all"
+              className="px-6 sm:px-10 py-4 bg-destructive hover:bg-destructive/90 text-primary-foreground rounded-2xl font-bold transition-all"
             >
               ■ Stop
             </button>
           )}
           <button
             onClick={() => setTargetDegree((d) => (d + 1) % 7)}
-            className="px-8 py-4 bg-surface hover:bg-surface/70 border border-border rounded-2xl font-semibold transition-all"
+            className="px-6 sm:px-8 py-4 bg-surface hover:bg-surface/70 border border-border rounded-2xl font-semibold transition-all"
           >
             Skip note →
           </button>
         </div>
 
-        {error && <p className="text-center text-destructive mt-6 text-sm">{error}</p>}
+        {error && <p className="text-center text-destructive mt-6 text-sm px-2">{error}</p>}
 
-        <p className="text-center text-xs text-muted-foreground mt-8">
+        <p className="text-center text-xs text-muted-foreground mt-8 px-2">
           Audio is processed entirely on your device. Nothing is uploaded.
         </p>
       </main>
       <SiteFooter />
     </div>
+
   );
 }
