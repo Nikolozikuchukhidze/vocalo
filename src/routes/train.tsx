@@ -106,6 +106,8 @@ function TrainPage() {
   const [targetKey, setTargetKey] = useState(KEY_OPTIONS[0]);
   const [targetDegree, setTargetDegree] = useState(0); // index in scale
   const [hitFlash, setHitFlash] = useState(false);
+  const [holdMs, setHoldMs] = useState(1000); // how long to sustain target before advancing
+  const [holdProgress, setHoldProgress] = useState(0); // 0..1
 
   const streamRef = useRef<MediaStream | null>(null);
   const ctxRef = useRef<AudioContext | null>(null);
@@ -113,6 +115,8 @@ function TrainPage() {
   const rafRef = useRef<number | null>(null);
   const histRef = useRef<number[]>(new Array(12).fill(0));
   const lastHitRef = useRef<number>(0);
+  const holdStartRef = useRef<number>(0);
+  const holdMsRef = useRef<number>(1000);
 
   const stop = () => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
@@ -126,6 +130,7 @@ function TrainPage() {
   };
 
   useEffect(() => () => stop(), []);
+  useEffect(() => { holdMsRef.current = holdMs; holdStartRef.current = 0; setHoldProgress(0); }, [holdMs, targetDegree, targetKey]);
 
   const start = async () => {
     setError("");
@@ -187,13 +192,28 @@ function TrainPage() {
         // octave-agnostic compare
         const diffSemi = ((midi - targetMidi) % 12 + 12) % 12;
         const dist = Math.min(diffSemi, 12 - diffSemi);
-        if (dist < 0.5 && Date.now() - lastHitRef.current > 800) {
-          lastHitRef.current = Date.now();
-          setHitFlash(true);
-          setTimeout(() => setHitFlash(false), 400);
-          setTargetDegree((d) => (d + 1) % 7);
+        const now = Date.now();
+        const onPitch = dist < 0.7;
+        if (onPitch) {
+          if (holdStartRef.current === 0) holdStartRef.current = now;
+          const heldFor = now - holdStartRef.current;
+          setHoldProgress(Math.min(1, heldFor / holdMsRef.current));
+          if (heldFor >= holdMsRef.current && now - lastHitRef.current > 300) {
+            lastHitRef.current = now;
+            holdStartRef.current = 0;
+            setHoldProgress(0);
+            setHitFlash(true);
+            setTimeout(() => setHitFlash(false), 400);
+            setTargetDegree((d) => (d + 1) % 7);
+          }
+        } else {
+          holdStartRef.current = 0;
+          setHoldProgress(0);
         }
         void targetFreq;
+      } else {
+        holdStartRef.current = 0;
+        setHoldProgress(0);
       }
 
       if (frame % 20 === 0) {
@@ -221,74 +241,116 @@ function TrainPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <SiteNav />
-      <main className="flex-1 px-6 py-12 max-w-5xl mx-auto w-full">
-        <div className="text-center mb-10">
-          <span className="font-mono-display uppercase tracking-[0.3em] text-xs text-accent">Live Trainer</span>
-          <h1 className="font-display text-4xl md:text-5xl font-extrabold mt-3 mb-3">
+      <main className="flex-1 px-4 sm:px-6 py-8 sm:py-12 max-w-5xl mx-auto w-full">
+        <div className="text-center mb-8 sm:mb-10">
+          <span className="font-mono-display uppercase tracking-[0.3em] text-[10px] sm:text-xs text-accent">Live Trainer</span>
+          <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold mt-3 mb-3">
             Sing. We'll find your key.
           </h1>
-          <p className="text-muted-foreground max-w-xl mx-auto">
+          <p className="text-sm sm:text-base text-muted-foreground max-w-xl mx-auto px-2">
             Vocalo listens in real time, tells you the note and key you're singing, and feeds you the next target note in any scale.
           </p>
         </div>
 
         {/* Live note display */}
-        <div className={`relative rounded-3xl border ${hitFlash ? "border-accent shadow-glow-brand" : "border-border"} bg-surface/70 backdrop-blur-xl p-8 md:p-12 mb-8 transition-all`}>
-          <div className="grid md:grid-cols-2 gap-8">
+        <div className={`relative rounded-2xl sm:rounded-3xl border ${hitFlash ? "border-accent shadow-glow-brand" : "border-border"} bg-surface/70 backdrop-blur-xl p-5 sm:p-8 md:p-12 mb-6 sm:mb-8 transition-all`}>
+          <div className="grid grid-cols-2 gap-4 sm:gap-8">
             {/* Current */}
-            <div className="text-center">
-              <div className="font-mono-display uppercase tracking-widest text-xs text-muted-foreground mb-3">You are singing</div>
-              <div className="font-display text-7xl md:text-8xl font-extrabold tabular-nums bg-gradient-brand bg-clip-text text-transparent">
+            <div className="text-center min-w-0">
+              <div className="font-mono-display uppercase tracking-widest text-[10px] sm:text-xs text-muted-foreground mb-2 sm:mb-3">You sing</div>
+              <div className="font-display text-5xl sm:text-7xl md:text-8xl font-extrabold tabular-nums bg-gradient-brand bg-clip-text text-transparent leading-none">
                 {note ? `${note.name}${note.octave}` : "—"}
               </div>
-              <div className="text-sm text-muted-foreground mt-2 font-mono-display">
+              <div className="text-[11px] sm:text-sm text-muted-foreground mt-2 font-mono-display truncate">
                 {currentFreq > 0 ? `${currentFreq.toFixed(1)} Hz` : active ? "listening…" : "press start"}
               </div>
-              {/* Volume bar */}
-              <div className="mt-4 h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+              <div className="mt-3 sm:mt-4 h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
                 <div className="h-full bg-gradient-brand transition-all duration-75" style={{ width: `${level * 100}%` }} />
               </div>
             </div>
 
             {/* Target */}
-            <div className="text-center">
-              <div className="font-mono-display uppercase tracking-widest text-xs text-muted-foreground mb-3">Sing this next</div>
-              <div className="font-display text-7xl md:text-8xl font-extrabold tabular-nums text-foreground">
-                {targetNote.name}<span className="text-muted-foreground text-4xl align-top">{targetNote.octave}</span>
+            <div className="text-center min-w-0">
+              <div className="font-mono-display uppercase tracking-widest text-[10px] sm:text-xs text-muted-foreground mb-2 sm:mb-3">Sing next</div>
+              <div className="font-display text-5xl sm:text-7xl md:text-8xl font-extrabold tabular-nums text-foreground leading-none">
+                {targetNote.name}<span className="text-muted-foreground text-2xl sm:text-4xl align-top">{targetNote.octave}</span>
               </div>
-              <div className="text-sm text-muted-foreground mt-2 font-mono-display">
-                {targetFreq.toFixed(1)} Hz · degree {targetDegree + 1} of {targetKey.label}
+              <div className="text-[11px] sm:text-sm text-muted-foreground mt-2 font-mono-display truncate">
+                {targetFreq.toFixed(1)} Hz · {targetDegree + 1}/{scale.length}
               </div>
-              {/* Tuning meter */}
-              <div className="mt-4 relative h-6">
+              <div className="mt-3 sm:mt-4 relative h-6">
                 <div className="absolute inset-x-0 top-1/2 h-px bg-border" />
                 <div className="absolute left-1/2 top-0 bottom-0 w-px bg-accent" />
                 {note && (
                   <div
-                    className={`absolute top-1/2 -translate-y-1/2 size-4 rounded-full transition-all ${Math.abs(wrappedCents) < 15 ? "bg-accent shadow-glow-brand" : "bg-brand"}`}
+                    className={`absolute top-1/2 size-3 sm:size-4 rounded-full transition-all ${Math.abs(wrappedCents) < 15 ? "bg-accent shadow-glow-brand" : "bg-brand"}`}
                     style={{ left: `calc(50% + ${Math.max(-50, Math.min(50, wrappedCents / 2))}%)`, transform: "translate(-50%, -50%)" }}
                   />
                 )}
               </div>
-              <div className="text-xs text-muted-foreground mt-1 font-mono-display">
-                {note ? `${wrappedCents > 0 ? "+" : ""}${wrappedCents} cents` : "—"}
+              <div className="text-[10px] sm:text-xs text-muted-foreground mt-1 font-mono-display">
+                {note ? `${wrappedCents > 0 ? "+" : ""}${wrappedCents}¢` : "—"}
               </div>
+            </div>
+          </div>
+
+          {/* Hold progress */}
+          <div className="mt-5 sm:mt-6">
+            <div className="flex justify-between items-center mb-1.5">
+              <span className="font-mono-display uppercase tracking-widest text-[10px] sm:text-xs text-muted-foreground">Hold</span>
+              <span className="font-mono-display text-[10px] sm:text-xs text-muted-foreground tabular-nums">
+                {(holdProgress * (holdMs / 1000)).toFixed(1)}s / {(holdMs / 1000).toFixed(1)}s
+              </span>
+            </div>
+            <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
+              <div className="h-full bg-gradient-brand transition-all duration-75" style={{ width: `${holdProgress * 100}%` }} />
             </div>
           </div>
         </div>
 
+        {/* Hold time picker */}
+        <div className="rounded-2xl border border-border bg-surface/70 p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
+            <div className="font-mono-display uppercase tracking-widest text-[10px] sm:text-xs text-muted-foreground">
+              Hold note for
+            </div>
+            <div className="font-display text-2xl font-bold tabular-nums">{(holdMs / 1000).toFixed(1)}s</div>
+          </div>
+          <input
+            type="range"
+            min={300}
+            max={5000}
+            step={100}
+            value={holdMs}
+            onChange={(e) => setHoldMs(Number(e.target.value))}
+            className="w-full accent-[var(--brand)] h-2"
+          />
+          <div className="flex flex-wrap gap-2 mt-3">
+            {[500, 1000, 1500, 2000, 3000].map((ms) => (
+              <button
+                key={ms}
+                onClick={() => setHoldMs(ms)}
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${holdMs === ms ? "bg-gradient-brand text-primary-foreground border-transparent" : "bg-white/5 hover:bg-white/10 border-border"}`}
+              >
+                {ms / 1000}s
+              </button>
+            ))}
+          </div>
+        </div>
+
+
         {/* Detected key */}
-        <div className="rounded-2xl border border-border bg-surface/70 p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="rounded-2xl border border-border bg-surface/70 p-4 sm:p-6 mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
           <div>
-            <div className="font-mono-display uppercase tracking-widest text-xs text-muted-foreground">Detected key</div>
-            <div className="font-display text-3xl font-bold mt-1">
+            <div className="font-mono-display uppercase tracking-widest text-[10px] sm:text-xs text-muted-foreground">Detected key</div>
+            <div className="font-display text-2xl sm:text-3xl font-bold mt-1">
               {detectedKey ? `${NOTE_NAMES[detectedKey.tonic]} ${detectedKey.mode}` : "Sing a few notes…"}
             </div>
           </div>
           {detectedKey && (
             <button
               onClick={() => setTargetKey({ label: `${NOTE_NAMES[detectedKey.tonic]} ${detectedKey.mode === "major" ? "Major" : "Minor"}`, tonic: detectedKey.tonic, mode: detectedKey.mode })}
-              className="px-5 py-2.5 bg-white/5 hover:bg-white/10 rounded-full text-sm font-semibold border border-border transition-all"
+              className="px-4 sm:px-5 py-2.5 bg-white/5 hover:bg-white/10 rounded-full text-xs sm:text-sm font-semibold border border-border transition-all whitespace-nowrap"
             >
               Train in this key →
             </button>
@@ -296,8 +358,8 @@ function TrainPage() {
         </div>
 
         {/* Key picker */}
-        <div className="rounded-2xl border border-border bg-surface/70 p-6 mb-8">
-          <div className="font-mono-display uppercase tracking-widest text-xs text-muted-foreground mb-4">Pick a key to practice</div>
+        <div className="rounded-2xl border border-border bg-surface/70 p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="font-mono-display uppercase tracking-widest text-[10px] sm:text-xs text-muted-foreground mb-3 sm:mb-4">Pick a key to practice</div>
           <div className="flex flex-wrap gap-2">
             {KEY_OPTIONS.map((k) => {
               const isActive = k.tonic === targetKey.tonic && k.mode === targetKey.mode;
@@ -305,7 +367,7 @@ function TrainPage() {
                 <button
                   key={k.label}
                   onClick={() => { setTargetKey(k); setTargetDegree(0); }}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold border transition-all ${isActive ? "bg-gradient-brand text-primary-foreground border-transparent shadow-glow-brand" : "bg-white/5 hover:bg-white/10 border-border"}`}
+                  className={`px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold border transition-all ${isActive ? "bg-gradient-brand text-primary-foreground border-transparent shadow-glow-brand" : "bg-white/5 hover:bg-white/10 border-border"}`}
                 >
                   {k.label}
                 </button>
@@ -313,7 +375,7 @@ function TrainPage() {
             })}
           </div>
           {/* Scale ladder */}
-          <div className="mt-6 flex flex-wrap gap-2">
+          <div className="mt-5 sm:mt-6 grid grid-cols-7 gap-1.5 sm:flex sm:flex-wrap sm:gap-2">
             {scale.map((deg, i) => {
               const m = 60 + targetKey.tonic + deg;
               const n = midiToNote(m);
@@ -321,9 +383,9 @@ function TrainPage() {
               return (
                 <div
                   key={i}
-                  className={`px-4 py-3 rounded-xl border font-mono-display text-sm min-w-16 text-center transition-all ${isCurrent ? "bg-accent/20 border-accent text-foreground" : "border-border text-muted-foreground"}`}
+                  className={`px-2 sm:px-4 py-2 sm:py-3 rounded-lg sm:rounded-xl border font-mono-display text-xs sm:text-sm sm:min-w-16 text-center transition-all ${isCurrent ? "bg-accent/20 border-accent text-foreground" : "border-border text-muted-foreground"}`}
                 >
-                  <div className="text-xs opacity-60">{i + 1}</div>
+                  <div className="text-[10px] sm:text-xs opacity-60">{i + 1}</div>
                   <div className="font-bold">{n.name}</div>
                 </div>
               );
@@ -336,33 +398,34 @@ function TrainPage() {
           {!active ? (
             <button
               onClick={start}
-              className="px-10 py-4 bg-brand hover:bg-brand/90 text-primary-foreground rounded-2xl font-bold shadow-glow-brand transition-all"
+              className="px-6 sm:px-10 py-4 bg-brand hover:bg-brand/90 text-primary-foreground rounded-2xl font-bold shadow-glow-brand transition-all"
             >
               🎙️ Start Live Training
             </button>
           ) : (
             <button
               onClick={stop}
-              className="px-10 py-4 bg-destructive hover:bg-destructive/90 text-primary-foreground rounded-2xl font-bold transition-all"
+              className="px-6 sm:px-10 py-4 bg-destructive hover:bg-destructive/90 text-primary-foreground rounded-2xl font-bold transition-all"
             >
               ■ Stop
             </button>
           )}
           <button
             onClick={() => setTargetDegree((d) => (d + 1) % 7)}
-            className="px-8 py-4 bg-surface hover:bg-surface/70 border border-border rounded-2xl font-semibold transition-all"
+            className="px-6 sm:px-8 py-4 bg-surface hover:bg-surface/70 border border-border rounded-2xl font-semibold transition-all"
           >
             Skip note →
           </button>
         </div>
 
-        {error && <p className="text-center text-destructive mt-6 text-sm">{error}</p>}
+        {error && <p className="text-center text-destructive mt-6 text-sm px-2">{error}</p>}
 
-        <p className="text-center text-xs text-muted-foreground mt-8">
+        <p className="text-center text-xs text-muted-foreground mt-8 px-2">
           Audio is processed entirely on your device. Nothing is uploaded.
         </p>
       </main>
       <SiteFooter />
     </div>
+
   );
 }
