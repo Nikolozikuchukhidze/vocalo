@@ -23,6 +23,7 @@ type Status =
   | { kind: "error"; message: string };
 
 function SignUp() {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -31,6 +32,11 @@ function SignUp() {
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    const cleanUsername = username.trim();
+    if (cleanUsername.length < 2) {
+      setStatus({ kind: "error", message: "Username must be at least 2 characters." });
+      return;
+    }
     if (password !== confirmPassword) {
       setStatus({ kind: "error", message: "Passwords do not match." });
       return;
@@ -41,7 +47,7 @@ function SignUp() {
     }
     setStatus({ kind: "loading" });
     try {
-      const data = await signUpWithEmail(email.trim(), password);
+      const data = await signUpWithEmail(email.trim(), password, cleanUsername);
       setStatus({ kind: "success", email });
       // If session exists (auto-confirm on), user is signed in immediately
       const target = data?.session ? "/sample-results" : "/sign-in";
