@@ -23,6 +23,7 @@ type Status =
   | { kind: "error"; message: string };
 
 function SignUp() {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -31,6 +32,11 @@ function SignUp() {
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    const cleanUsername = username.trim();
+    if (cleanUsername.length < 2) {
+      setStatus({ kind: "error", message: "Username must be at least 2 characters." });
+      return;
+    }
     if (password !== confirmPassword) {
       setStatus({ kind: "error", message: "Passwords do not match." });
       return;
@@ -41,7 +47,7 @@ function SignUp() {
     }
     setStatus({ kind: "loading" });
     try {
-      const data = await signUpWithEmail(email.trim(), password);
+      const data = await signUpWithEmail(email.trim(), password, cleanUsername);
       setStatus({ kind: "success", email });
       // If session exists (auto-confirm on), user is signed in immediately
       const target = data?.session ? "/sample-results" : "/sign-in";
@@ -114,6 +120,23 @@ function SignUp() {
                   )}
 
                   <form className="space-y-5" onSubmit={onSubmit}>
+                    <div className="space-y-2">
+                      <label className="text-xs font-mono-display uppercase tracking-widest text-muted-foreground">
+                        Username
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        autoComplete="username"
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        placeholder="your_handle"
+                        className={`w-full px-4 py-3 bg-background border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition ${
+                          isError ? "border-destructive/50 focus:ring-destructive" : "border-border focus:ring-brand"
+                        }`}
+                      />
+                    </div>
+
                     <div className="space-y-2">
                       <label className="text-xs font-mono-display uppercase tracking-widest text-muted-foreground">
                         Email

@@ -23,15 +23,16 @@ export function SiteNav() {
   const firstLetter = (displayName as string)?.charAt(0).toUpperCase() || "U";
 
   return (
-    <nav className="flex items-center justify-between px-6 md:px-8 py-6 border-b border-border">
+    <nav className="flex items-center justify-between gap-3 px-4 sm:px-6 md:px-8 py-4 sm:py-6 border-b border-border">
       <VocaloLogo />
-      <div className="hidden md:flex gap-8 text-sm font-medium text-muted-foreground">
+      <div className="flex gap-4 sm:gap-6 md:gap-8 text-xs sm:text-sm font-medium text-muted-foreground">
         <Link
           to="/how-it-works"
-          className="hover:text-foreground transition-colors"
+          className="hover:text-foreground transition-colors whitespace-nowrap"
           activeProps={{ className: "text-foreground" }}
         >
-          How it Works
+          <span className="hidden sm:inline">How it Works</span>
+          <span className="sm:hidden">How</span>
         </Link>
         <Link
           to="/train"
@@ -41,6 +42,7 @@ export function SiteNav() {
           Train
         </Link>
       </div>
+
 
       {isLoading ? (
         <div className="w-20 h-10 bg-white/5 rounded-full animate-pulse" />
