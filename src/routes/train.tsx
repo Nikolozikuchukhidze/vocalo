@@ -130,6 +130,7 @@ function TrainPage() {
   };
 
   useEffect(() => () => stop(), []);
+  useEffect(() => { holdMsRef.current = holdMs; holdStartRef.current = 0; setHoldProgress(0); }, [holdMs, targetDegree, targetKey]);
 
   const start = async () => {
     setError("");
