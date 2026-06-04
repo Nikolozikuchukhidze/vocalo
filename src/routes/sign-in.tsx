@@ -30,6 +30,14 @@ function SignIn() {
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    if (!identifier.trim()) {
+      setStatus({ kind: "error", message: "Enter your email or username." });
+      return;
+    }
+    if (!password) {
+      setStatus({ kind: "error", message: "Enter your password." });
+      return;
+    }
     setStatus({ kind: "loading" });
     try {
       await signInWithEmail(identifier.trim(), password);
