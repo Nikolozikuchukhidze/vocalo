@@ -23,7 +23,7 @@ type Status =
   | { kind: "error"; message: string };
 
 function SignIn() {
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const navigate = useNavigate();
@@ -32,8 +32,8 @@ function SignIn() {
     e.preventDefault();
     setStatus({ kind: "loading" });
     try {
-      await signInWithEmail(email.trim(), password);
-      setStatus({ kind: "success", email });
+      await signInWithEmail(identifier.trim(), password);
+      setStatus({ kind: "success", email: identifier });
       setTimeout(() => navigate({ to: "/sample-results" }), 800);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Sign in failed. Please try again.";
