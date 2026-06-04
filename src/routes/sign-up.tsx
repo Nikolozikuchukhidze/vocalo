@@ -33,23 +33,30 @@ function SignUp() {
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     const cleanUsername = username.trim();
-    if (cleanUsername.length < 2) {
-      setStatus({ kind: "error", message: "Username must be at least 2 characters." });
-      return;
+    const cleanEmail = email.trim();
+    const errors: Record<string, string> = {};
+    if (!USERNAME_REGEX.test(cleanUsername)) {
+      errors.username = "Username must be 3–20 letters, numbers, or underscores.";
     }
-    if (password !== confirmPassword) {
-      setStatus({ kind: "error", message: "Passwords do not match." });
-      return;
+    if (!EMAIL_REGEX.test(cleanEmail)) {
+      errors.email = "Enter a valid email address.";
     }
     if (password.length < 6) {
-      setStatus({ kind: "error", message: "Password must be at least 6 characters." });
+      errors.password = "Password must be at least 6 characters.";
+    }
+    if (password !== confirmPassword) {
+      errors.confirmPassword = "Passwords do not match.";
+    }
+    if (Object.keys(errors).length) {
+      setFieldErrors(errors);
+      setStatus({ kind: "idle" });
       return;
     }
+    setFieldErrors({});
     setStatus({ kind: "loading" });
     try {
-      const data = await signUpWithEmail(email.trim(), password, cleanUsername);
-      setStatus({ kind: "success", email });
-      // If session exists (auto-confirm on), user is signed in immediately
+      const data = await signUpWithEmail(cleanEmail, password, cleanUsername);
+      setStatus({ kind: "success", email: cleanEmail });
       const target = data?.session ? "/sample-results" : "/sign-in";
       setTimeout(() => navigate({ to: target }), 800);
     } catch (err) {
