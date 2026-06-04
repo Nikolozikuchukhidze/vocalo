@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { SiteNav } from "@/components/SiteNav";
 import { SiteFooter } from "@/components/SiteFooter";
-import { signUpWithEmail, signInWithGoogle } from "@/lib/auth";
+import { signUpWithEmail, signInWithGoogle, USERNAME_REGEX, EMAIL_REGEX } from "@/lib/auth";
 
 export const Route = createFileRoute("/sign-up")({
   head: () => ({
