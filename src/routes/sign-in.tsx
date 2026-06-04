@@ -104,14 +104,15 @@ function SignIn() {
                   <form className="space-y-5" onSubmit={onSubmit}>
                     <div className="space-y-2">
                       <label className="text-xs font-mono-display uppercase tracking-widest text-muted-foreground">
-                        Email
+                        Email or Username
                       </label>
                       <input
-                        type="email"
+                        type="text"
                         required
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="you@studio.com"
+                        autoComplete="username"
+                        value={identifier}
+                        onChange={(e) => setIdentifier(e.target.value)}
+                        placeholder="you@studio.com or your_handle"
                         className={`w-full px-4 py-3 bg-background border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition ${
                           isError ? "border-destructive/50 focus:ring-destructive" : "border-border focus:ring-brand"
                         }`}
