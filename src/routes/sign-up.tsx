@@ -2,7 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState, type FormEvent } from "react";
 import { SiteNav } from "@/components/SiteNav";
 import { SiteFooter } from "@/components/SiteFooter";
-import { signUpWithEmail, signInWithGoogle } from "@/lib/auth";
+import { signUpWithEmail, signInWithGoogle, USERNAME_REGEX, EMAIL_REGEX } from "@/lib/auth";
 
 export const Route = createFileRoute("/sign-up")({
   head: () => ({
@@ -28,28 +28,36 @@ function SignUp() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [status, setStatus] = useState<Status>({ kind: "idle" });
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const navigate = useNavigate();
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     const cleanUsername = username.trim();
-    if (cleanUsername.length < 2) {
-      setStatus({ kind: "error", message: "Username must be at least 2 characters." });
-      return;
+    const cleanEmail = email.trim();
+    const errors: Record<string, string> = {};
+    if (!USERNAME_REGEX.test(cleanUsername)) {
+      errors.username = "Username must be 3–20 letters, numbers, or underscores.";
     }
-    if (password !== confirmPassword) {
-      setStatus({ kind: "error", message: "Passwords do not match." });
-      return;
+    if (!EMAIL_REGEX.test(cleanEmail)) {
+      errors.email = "Enter a valid email address.";
     }
     if (password.length < 6) {
-      setStatus({ kind: "error", message: "Password must be at least 6 characters." });
+      errors.password = "Password must be at least 6 characters.";
+    }
+    if (password !== confirmPassword) {
+      errors.confirmPassword = "Passwords do not match.";
+    }
+    if (Object.keys(errors).length) {
+      setFieldErrors(errors);
+      setStatus({ kind: "idle" });
       return;
     }
+    setFieldErrors({});
     setStatus({ kind: "loading" });
     try {
-      const data = await signUpWithEmail(email.trim(), password, cleanUsername);
-      setStatus({ kind: "success", email });
-      // If session exists (auto-confirm on), user is signed in immediately
+      const data = await signUpWithEmail(cleanEmail, password, cleanUsername);
+      setStatus({ kind: "success", email: cleanEmail });
       const target = data?.session ? "/sample-results" : "/sign-in";
       setTimeout(() => navigate({ to: target }), 800);
     } catch (err) {
@@ -119,22 +127,25 @@ function SignUp() {
                     </div>
                   )}
 
-                  <form className="space-y-5" onSubmit={onSubmit}>
+                  <form className="space-y-5" onSubmit={onSubmit} noValidate>
                     <div className="space-y-2">
                       <label className="text-xs font-mono-display uppercase tracking-widest text-muted-foreground">
                         Username
                       </label>
                       <input
                         type="text"
-                        required
                         autoComplete="username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         placeholder="your_handle"
+                        aria-invalid={!!fieldErrors.username}
                         className={`w-full px-4 py-3 bg-background border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition ${
-                          isError ? "border-destructive/50 focus:ring-destructive" : "border-border focus:ring-brand"
+                          fieldErrors.username ? "border-destructive/60 focus:ring-destructive" : "border-border focus:ring-brand"
                         }`}
                       />
+                      {fieldErrors.username && (
+                        <p className="text-xs text-destructive mt-1">{fieldErrors.username}</p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
@@ -143,14 +154,17 @@ function SignUp() {
                       </label>
                       <input
                         type="email"
-                        required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="you@studio.com"
+                        aria-invalid={!!fieldErrors.email}
                         className={`w-full px-4 py-3 bg-background border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition ${
-                          isError ? "border-destructive/50 focus:ring-destructive" : "border-border focus:ring-brand"
+                          fieldErrors.email ? "border-destructive/60 focus:ring-destructive" : "border-border focus:ring-brand"
                         }`}
                       />
+                      {fieldErrors.email && (
+                        <p className="text-xs text-destructive mt-1">{fieldErrors.email}</p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
@@ -159,14 +173,17 @@ function SignUp() {
                       </label>
                       <input
                         type="password"
-                        required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="••••••••"
+                        aria-invalid={!!fieldErrors.password}
                         className={`w-full px-4 py-3 bg-background border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition ${
-                          isError ? "border-destructive/50 focus:ring-destructive" : "border-border focus:ring-brand"
+                          fieldErrors.password ? "border-destructive/60 focus:ring-destructive" : "border-border focus:ring-brand"
                         }`}
                       />
+                      {fieldErrors.password && (
+                        <p className="text-xs text-destructive mt-1">{fieldErrors.password}</p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
@@ -175,14 +192,17 @@ function SignUp() {
                       </label>
                       <input
                         type="password"
-                        required
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="••••••••"
+                        aria-invalid={!!fieldErrors.confirmPassword}
                         className={`w-full px-4 py-3 bg-background border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition ${
-                          isError ? "border-destructive/50 focus:ring-destructive" : "border-border focus:ring-brand"
+                          fieldErrors.confirmPassword ? "border-destructive/60 focus:ring-destructive" : "border-border focus:ring-brand"
                         }`}
                       />
+                      {fieldErrors.confirmPassword && (
+                        <p className="text-xs text-destructive mt-1">{fieldErrors.confirmPassword}</p>
+                      )}
                     </div>
 
                     <button

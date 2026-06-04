@@ -30,6 +30,14 @@ function SignIn() {
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
+    if (!identifier.trim()) {
+      setStatus({ kind: "error", message: "Enter your email or username." });
+      return;
+    }
+    if (!password) {
+      setStatus({ kind: "error", message: "Enter your password." });
+      return;
+    }
     setStatus({ kind: "loading" });
     try {
       await signInWithEmail(identifier.trim(), password);
@@ -101,14 +109,13 @@ function SignIn() {
                     </div>
                   )}
 
-                  <form className="space-y-5" onSubmit={onSubmit}>
+                  <form className="space-y-5" onSubmit={onSubmit} noValidate>
                     <div className="space-y-2">
                       <label className="text-xs font-mono-display uppercase tracking-widest text-muted-foreground">
                         Email or Username
                       </label>
                       <input
                         type="text"
-                        required
                         autoComplete="username"
                         value={identifier}
                         onChange={(e) => setIdentifier(e.target.value)}
@@ -130,7 +137,6 @@ function SignIn() {
                       </div>
                       <input
                         type="password"
-                        required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="••••••••"
