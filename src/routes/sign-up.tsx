@@ -127,22 +127,25 @@ function SignUp() {
                     </div>
                   )}
 
-                  <form className="space-y-5" onSubmit={onSubmit}>
+                  <form className="space-y-5" onSubmit={onSubmit} noValidate>
                     <div className="space-y-2">
                       <label className="text-xs font-mono-display uppercase tracking-widest text-muted-foreground">
                         Username
                       </label>
                       <input
                         type="text"
-                        required
                         autoComplete="username"
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         placeholder="your_handle"
+                        aria-invalid={!!fieldErrors.username}
                         className={`w-full px-4 py-3 bg-background border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition ${
-                          isError ? "border-destructive/50 focus:ring-destructive" : "border-border focus:ring-brand"
+                          fieldErrors.username ? "border-destructive/60 focus:ring-destructive" : "border-border focus:ring-brand"
                         }`}
                       />
+                      {fieldErrors.username && (
+                        <p className="text-xs text-destructive mt-1">{fieldErrors.username}</p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
@@ -151,14 +154,17 @@ function SignUp() {
                       </label>
                       <input
                         type="email"
-                        required
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="you@studio.com"
+                        aria-invalid={!!fieldErrors.email}
                         className={`w-full px-4 py-3 bg-background border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition ${
-                          isError ? "border-destructive/50 focus:ring-destructive" : "border-border focus:ring-brand"
+                          fieldErrors.email ? "border-destructive/60 focus:ring-destructive" : "border-border focus:ring-brand"
                         }`}
                       />
+                      {fieldErrors.email && (
+                        <p className="text-xs text-destructive mt-1">{fieldErrors.email}</p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
@@ -167,14 +173,17 @@ function SignUp() {
                       </label>
                       <input
                         type="password"
-                        required
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         placeholder="••••••••"
+                        aria-invalid={!!fieldErrors.password}
                         className={`w-full px-4 py-3 bg-background border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition ${
-                          isError ? "border-destructive/50 focus:ring-destructive" : "border-border focus:ring-brand"
+                          fieldErrors.password ? "border-destructive/60 focus:ring-destructive" : "border-border focus:ring-brand"
                         }`}
                       />
+                      {fieldErrors.password && (
+                        <p className="text-xs text-destructive mt-1">{fieldErrors.password}</p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
@@ -183,14 +192,17 @@ function SignUp() {
                       </label>
                       <input
                         type="password"
-                        required
                         value={confirmPassword}
                         onChange={(e) => setConfirmPassword(e.target.value)}
                         placeholder="••••••••"
+                        aria-invalid={!!fieldErrors.confirmPassword}
                         className={`w-full px-4 py-3 bg-background border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition ${
-                          isError ? "border-destructive/50 focus:ring-destructive" : "border-border focus:ring-brand"
+                          fieldErrors.confirmPassword ? "border-destructive/60 focus:ring-destructive" : "border-border focus:ring-brand"
                         }`}
                       />
+                      {fieldErrors.confirmPassword && (
+                        <p className="text-xs text-destructive mt-1">{fieldErrors.confirmPassword}</p>
+                      )}
                     </div>
 
                     <button
