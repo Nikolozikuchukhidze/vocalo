@@ -23,7 +23,7 @@ type Status =
   | { kind: "error"; message: string };
 
 function SignIn() {
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const navigate = useNavigate();
@@ -32,8 +32,8 @@ function SignIn() {
     e.preventDefault();
     setStatus({ kind: "loading" });
     try {
-      await signInWithEmail(email.trim(), password);
-      setStatus({ kind: "success", email });
+      await signInWithEmail(identifier.trim(), password);
+      setStatus({ kind: "success", email: identifier });
       setTimeout(() => navigate({ to: "/sample-results" }), 800);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Sign in failed. Please try again.";
@@ -104,14 +104,15 @@ function SignIn() {
                   <form className="space-y-5" onSubmit={onSubmit}>
                     <div className="space-y-2">
                       <label className="text-xs font-mono-display uppercase tracking-widest text-muted-foreground">
-                        Email
+                        Email or Username
                       </label>
                       <input
-                        type="email"
+                        type="text"
                         required
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="you@studio.com"
+                        autoComplete="username"
+                        value={identifier}
+                        onChange={(e) => setIdentifier(e.target.value)}
+                        placeholder="you@studio.com or your_handle"
                         className={`w-full px-4 py-3 bg-background border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 transition ${
                           isError ? "border-destructive/50 focus:ring-destructive" : "border-border focus:ring-brand"
                         }`}
