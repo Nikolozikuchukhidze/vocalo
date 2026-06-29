@@ -16,26 +16,8 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-type Song = {
-  title: string;
-  artist: string;
-  difficulty: "EASY" | "MEDIUM" | "ADVANCED";
-  match: number;
-  tone: "brand" | "secondary" | "accent";
-};
 
-const songs: Song[] = [
-  { title: "Perfect", artist: "Ed Sheeran", difficulty: "EASY", match: 98, tone: "accent" },
-  { title: "Someone You Loved", artist: "Lewis Capaldi", difficulty: "MEDIUM", match: 92, tone: "secondary" },
-  { title: "Yellow", artist: "Coldplay", difficulty: "EASY", match: 89, tone: "accent" },
-  { title: "Gravity", artist: "John Mayer", difficulty: "ADVANCED", match: 85, tone: "brand" },
-];
 
-const difficultyStyles: Record<Song["difficulty"], string> = {
-  EASY: "bg-emerald-500/10 text-emerald-300 border-emerald-500/30",
-  MEDIUM: "bg-amber-500/10 text-amber-300 border-amber-500/30",
-  ADVANCED: "bg-rose-500/10 text-rose-300 border-rose-500/30",
-};
 
 function Index() {
   return (
