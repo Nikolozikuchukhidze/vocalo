@@ -90,8 +90,32 @@ function Index() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { icon: "🎤", title: "Record Comfort Notes", desc: "Hum your lowest and highest comfortable notes to map your tessitura.", color: "brand" },
+              { icon: "⚡", title: "AI Analysis", desc: "Instant detection of vocal weight, brightness, and natural resonance.", color: "brand-secondary" },
+              { icon: "🎸", title: "Matching Engine", desc: "Get songs tagged with the exact difficulty and range suitability for you.", color: "brand-accent" },
+            ].map((c) => (
+              <div
+                key={c.title}
+                className="p-8 bg-surface border border-border rounded-3xl space-y-4 hover:border-brand/40 transition-colors group"
+              >
+                <div
+                  className="size-12 rounded-2xl grid place-items-center text-2xl group-hover:scale-110 transition-transform"
+                  style={{ background: `color-mix(in oklab, var(--${c.color}) 20%, transparent)` }}
+                >
+                  {c.icon}
+                </div>
+                <h3 className="text-xl font-bold">{c.title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed">{c.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Results Mock */}
       <section className="max-w-3xl mx-auto px-6 py-24">
+
         <div className="p-8 bg-gradient-to-br from-brand/15 to-transparent border border-brand/30 rounded-3xl">
           <div className="flex items-center gap-4 mb-6">
             <div className="size-16 rounded-full bg-gradient-brand border-2 border-brand grid place-items-center text-2xl">
