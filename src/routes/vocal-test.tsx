@@ -269,7 +269,17 @@ function VocalTest() {
                   disabled={phase === "analyzing" || phase === "permission"}
                   onClick={() => {
                     if (phase === "intro" || phase === "error") void requestMicAndStart();
-                    if (phase === "done") navigate({ to: "/sample-results" });
+                    if (phase === "done" && lowNote && highNote) {
+                      navigate({
+                        to: "/sample-results",
+                        search: {
+                          low: lowNote.name,
+                          high: highNote.name,
+                          lowF: Math.round(lowNote.freq * 10) / 10,
+                          highF: Math.round(highNote.freq * 10) / 10,
+                        },
+                      });
+                    }
                   }}
                   className={`relative size-32 rounded-full grid place-items-center text-5xl transition-all ${
                     recording
@@ -331,10 +341,16 @@ function VocalTest() {
                 </button>
               )}
 
-              {phase === "done" && (
+              {phase === "done" && lowNote && highNote && (
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <Link
                     to="/sample-results"
+                    search={{
+                      low: lowNote.name,
+                      high: highNote.name,
+                      lowF: Math.round(lowNote.freq * 10) / 10,
+                      highF: Math.round(highNote.freq * 10) / 10,
+                    }}
                     className="px-8 py-4 bg-brand hover:bg-brand/90 text-primary-foreground rounded-2xl font-bold shadow-glow-brand transition-all"
                   >
                     See My Results →
