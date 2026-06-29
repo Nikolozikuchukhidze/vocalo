@@ -269,7 +269,17 @@ function VocalTest() {
                   disabled={phase === "analyzing" || phase === "permission"}
                   onClick={() => {
                     if (phase === "intro" || phase === "error") void requestMicAndStart();
-                    if (phase === "done") navigate({ to: "/sample-results" });
+                    if (phase === "done" && lowNote && highNote) {
+                      navigate({
+                        to: "/sample-results",
+                        search: {
+                          low: lowNote.name,
+                          high: highNote.name,
+                          lowF: Math.round(lowNote.freq * 10) / 10,
+                          highF: Math.round(highNote.freq * 10) / 10,
+                        },
+                      });
+                    }
                   }}
                   className={`relative size-32 rounded-full grid place-items-center text-5xl transition-all ${
                     recording
