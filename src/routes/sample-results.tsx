@@ -14,27 +14,8 @@ export const Route = createFileRoute("/sample-results")({
   component: SampleResults,
 });
 
-type Song = {
-  title: string;
-  artist: string;
-  difficulty: "EASY" | "MEDIUM" | "ADVANCED";
-  match: number;
-};
 
-const songs: Song[] = [
-  { title: "Perfect", artist: "Ed Sheeran", difficulty: "EASY", match: 98 },
-  { title: "Someone You Loved", artist: "Lewis Capaldi", difficulty: "MEDIUM", match: 92 },
-  { title: "Yellow", artist: "Coldplay", difficulty: "EASY", match: 89 },
-  { title: "Gravity", artist: "John Mayer", difficulty: "ADVANCED", match: 85 },
-  { title: "Stay With Me", artist: "Sam Smith", difficulty: "MEDIUM", match: 83 },
-  { title: "Photograph", artist: "Ed Sheeran", difficulty: "EASY", match: 81 },
-];
 
-const difficultyStyles: Record<Song["difficulty"], string> = {
-  EASY: "bg-emerald-500/10 text-emerald-300 border-emerald-500/30",
-  MEDIUM: "bg-amber-500/10 text-amber-300 border-amber-500/30",
-  ADVANCED: "bg-rose-500/10 text-rose-300 border-rose-500/30",
-};
 
 const notes = ["C2", "E2", "G2", "B2", "D3", "F3", "A3", "C4", "E4", "G4", "B4", "D5", "E5", "G5"];
 const lowIdx = 3; // B2
