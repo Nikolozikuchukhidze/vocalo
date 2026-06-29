@@ -81,7 +81,7 @@ function SampleResults() {
         highFreq: search.highF ?? 0,
       },
     })
-      .then((r) => {
+      .then((r: Recommendations) => {
         if (!cancelled) setRecs(r);
       })
       .catch((e: unknown) => {
