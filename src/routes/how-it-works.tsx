@@ -53,6 +53,43 @@ function HowItWorks() {
           </p>
         </div>
 
+        {/* Mascot coach */}
+        <div className="mt-20 flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-4">
+          {/* Mascot card */}
+          <div className="relative size-32 sm:size-36 rounded-3xl border-2 border-brand bg-surface/80 grid place-items-center shadow-glow-brand shrink-0">
+            <svg viewBox="0 0 80 80" className="w-16 h-16" fill="none">
+              <circle cx="28" cy="32" r="5" fill="var(--brand)" />
+              <circle cx="52" cy="32" r="5" fill="var(--brand)" />
+              <path
+                d="M24 48 Q24 58 40 58 Q56 58 56 48"
+                stroke="var(--brand)"
+                strokeWidth="4"
+                strokeLinecap="round"
+                fill="none"
+              />
+            </svg>
+            <span className="absolute -top-3 -right-3 text-brand-accent text-xl font-mono-display">~</span>
+            <span className="absolute -bottom-2 -right-2 text-brand-secondary text-xs font-mono-display">▪▪</span>
+          </div>
+
+          {/* Speech bubble */}
+          <div className="relative max-w-sm">
+            {/* Tail */}
+            <div className="hidden sm:block absolute left-[-10px] top-1/2 -translate-y-1/2 w-0 h-0 border-y-[12px] border-y-transparent border-r-[14px] border-r-brand" />
+            <div className="hidden sm:block absolute left-[-7px] top-1/2 -translate-y-1/2 w-0 h-0 border-y-[10px] border-y-transparent border-r-[12px] border-r-surface" />
+            <div className="px-8 py-6 rounded-3xl border-2 border-brand bg-surface/80 text-center">
+              <p className="font-display text-lg sm:text-xl text-brand font-bold leading-snug">
+                "Hold the note higher!
+                <br />
+                <span className="font-mono-display tracking-wide">BIP-BOP!</span>"
+              </p>
+            </div>
+            <span className="absolute -top-3 -right-3 text-brand-accent text-xl font-mono-display">~</span>
+          </div>
+        </div>
+
+
+
         <div className="space-y-6">
           {steps.map((s) => (
             <div
