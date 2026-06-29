@@ -16,26 +16,8 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-type Song = {
-  title: string;
-  artist: string;
-  difficulty: "EASY" | "MEDIUM" | "ADVANCED";
-  match: number;
-  tone: "brand" | "secondary" | "accent";
-};
 
-const songs: Song[] = [
-  { title: "Perfect", artist: "Ed Sheeran", difficulty: "EASY", match: 98, tone: "accent" },
-  { title: "Someone You Loved", artist: "Lewis Capaldi", difficulty: "MEDIUM", match: 92, tone: "secondary" },
-  { title: "Yellow", artist: "Coldplay", difficulty: "EASY", match: 89, tone: "accent" },
-  { title: "Gravity", artist: "John Mayer", difficulty: "ADVANCED", match: 85, tone: "brand" },
-];
 
-const difficultyStyles: Record<Song["difficulty"], string> = {
-  EASY: "bg-emerald-500/10 text-emerald-300 border-emerald-500/30",
-  MEDIUM: "bg-amber-500/10 text-amber-300 border-amber-500/30",
-  ADVANCED: "bg-rose-500/10 text-rose-300 border-rose-500/30",
-};
 
 function Index() {
   return (
@@ -132,105 +114,59 @@ function Index() {
       </section>
 
       {/* Results Mock */}
-      <section className="max-w-7xl mx-auto px-6 py-24">
-        <div className="flex flex-col lg:flex-row gap-12">
-          {/* Profile Sidebar */}
-          <div className="lg:w-1/3 space-y-6">
-            <div className="p-6 bg-gradient-to-br from-brand/15 to-transparent border border-brand/30 rounded-3xl">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="size-16 rounded-full bg-gradient-brand border-2 border-brand grid place-items-center text-2xl">
-                  🎙️
-                </div>
-                <div>
-                  <h4 className="font-bold text-xl">Your Profile</h4>
-                  <span className="text-xs text-brand font-mono-display uppercase tracking-widest">
-                    High Tenor
-                  </span>
-                </div>
-              </div>
-              <div className="space-y-4">
-                {[
-                  { label: "Warmth", value: 82, color: "var(--brand)" },
-                  { label: "Flexibility", value: 64, color: "var(--brand-secondary)" },
-                  { label: "Brightness", value: 71, color: "var(--brand-accent)" },
-                ].map((m) => (
-                  <div key={m.label}>
-                    <div className="flex justify-between text-xs font-mono-display mb-2 uppercase text-muted-foreground">
-                      <span>{m.label}</span>
-                      <span>{m.value}%</span>
-                    </div>
-                    <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                      <div className="h-full" style={{ width: `${m.value}%`, background: m.color }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+      <section className="max-w-3xl mx-auto px-6 py-24">
 
-            <div className="p-6 bg-surface border border-border rounded-3xl">
-              <div className="text-xs font-mono-display uppercase text-muted-foreground mb-4">
-                Recommended Genres
-              </div>
-              <div className="flex flex-wrap gap-2">
-                {["Pop", "Indie Pop", "Acoustic", "Soft Rock", "Country"].map((g) => (
-                  <span
-                    key={g}
-                    className="px-3 py-1 bg-background border border-border rounded-full text-xs font-medium"
-                  >
-                    {g}
-                  </span>
-                ))}
-              </div>
+        <div className="p-8 bg-gradient-to-br from-brand/15 to-transparent border border-brand/30 rounded-3xl">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="size-16 rounded-full bg-gradient-brand border-2 border-brand grid place-items-center text-2xl">
+              🎙️
             </div>
-          </div>
-
-          {/* Songs */}
-          <div className="lg:w-2/3">
-            <h3 className="text-2xl font-extrabold mb-8 flex items-center gap-3">
-              Perfect Match Songs
-              <span className="px-2 py-0.5 bg-accent/10 border border-accent/30 text-accent text-[10px] rounded uppercase tracking-tighter font-mono-display">
-                Top Picks
+            <div>
+              <h4 className="font-bold text-xl">Your Profile</h4>
+              <span className="text-xs text-brand font-mono-display uppercase tracking-widest">
+                High Tenor
               </span>
-            </h3>
-
-            <div className="grid sm:grid-cols-2 gap-4">
-              {songs.map((s) => (
-                <div
-                  key={s.title}
-                  className="flex items-center p-4 bg-surface/40 hover:bg-surface border border-border rounded-2xl gap-4 transition-all group"
-                >
-                  <div className="size-16 rounded-xl bg-gradient-brand shrink-0 group-hover:scale-105 transition-transform grid place-items-center text-2xl">
-                    ♪
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <h5 className="font-bold truncate">{s.title}</h5>
-                    <p className="text-xs text-muted-foreground truncate">{s.artist}</p>
-                    <div className="mt-2 flex items-center gap-2">
-                      <span
-                        className={`text-[10px] px-1.5 py-0.5 border rounded font-mono-display ${difficultyStyles[s.difficulty]}`}
-                      >
-                        {s.difficulty}
-                      </span>
-                      <span className="text-[10px] text-muted-foreground font-mono-display">
-                        {s.match}% Match
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-8">
-              <Link
-                to="/how-it-works"
-                className="text-sm text-accent hover:underline font-mono-display uppercase tracking-widest"
-              >
-                Learn how this works →
-              </Link>
             </div>
           </div>
+          <div className="space-y-4 mb-6">
+            {[
+              { label: "Warmth", value: 82, color: "var(--brand)" },
+              { label: "Flexibility", value: 64, color: "var(--brand-secondary)" },
+              { label: "Brightness", value: 71, color: "var(--brand-accent)" },
+            ].map((m) => (
+              <div key={m.label}>
+                <div className="flex justify-between text-xs font-mono-display mb-2 uppercase text-muted-foreground">
+                  <span>{m.label}</span>
+                  <span>{m.value}%</span>
+                </div>
+                <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                  <div className="h-full" style={{ width: `${m.value}%`, background: m.color }} />
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="text-xs font-mono-display uppercase text-muted-foreground mb-3">
+            Recommended Genres
+          </div>
+          <div className="flex flex-wrap gap-2 mb-6">
+            {["Pop", "Indie Pop", "Acoustic", "Soft Rock", "Country"].map((g) => (
+              <span
+                key={g}
+                className="px-3 py-1 bg-background border border-border rounded-full text-xs font-medium"
+              >
+                {g}
+              </span>
+            ))}
+          </div>
+          <Link
+            to="/how-it-works"
+            className="text-sm text-accent hover:underline font-mono-display uppercase tracking-widest"
+          >
+            Learn how this works →
+          </Link>
         </div>
       </section>
+
 
       <SiteFooter />
     </div>
