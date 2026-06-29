@@ -24,7 +24,7 @@ const steps = [
   {
     n: "02",
     title: "Analyze",
-    desc: "Our neural engine measures over 12 parameters — weight, brightness, flexibility, resonance — to classify your voice type.",
+    desc: "Our neural engine measures your vocal range, classifying your voice type with precision.",
     accent: "var(--brand-secondary)",
   },
   {

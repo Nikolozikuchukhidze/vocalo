@@ -14,27 +14,8 @@ export const Route = createFileRoute("/sample-results")({
   component: SampleResults,
 });
 
-type Song = {
-  title: string;
-  artist: string;
-  difficulty: "EASY" | "MEDIUM" | "ADVANCED";
-  match: number;
-};
 
-const songs: Song[] = [
-  { title: "Perfect", artist: "Ed Sheeran", difficulty: "EASY", match: 98 },
-  { title: "Someone You Loved", artist: "Lewis Capaldi", difficulty: "MEDIUM", match: 92 },
-  { title: "Yellow", artist: "Coldplay", difficulty: "EASY", match: 89 },
-  { title: "Gravity", artist: "John Mayer", difficulty: "ADVANCED", match: 85 },
-  { title: "Stay With Me", artist: "Sam Smith", difficulty: "MEDIUM", match: 83 },
-  { title: "Photograph", artist: "Ed Sheeran", difficulty: "EASY", match: 81 },
-];
 
-const difficultyStyles: Record<Song["difficulty"], string> = {
-  EASY: "bg-emerald-500/10 text-emerald-300 border-emerald-500/30",
-  MEDIUM: "bg-amber-500/10 text-amber-300 border-amber-500/30",
-  ADVANCED: "bg-rose-500/10 text-rose-300 border-rose-500/30",
-};
 
 const notes = ["C2", "E2", "G2", "B2", "D3", "F3", "A3", "C4", "E4", "G4", "B4", "D5", "E5", "G5"];
 const lowIdx = 3; // B2
@@ -96,30 +77,8 @@ function SampleResults() {
           </div>
         </div>
 
-        {/* Profile + genres */}
-        <div className="grid lg:grid-cols-3 gap-6 mb-10">
-          <div className="p-6 bg-gradient-to-br from-brand/15 to-transparent border border-brand/30 rounded-3xl">
-            <div className="text-xs font-mono-display uppercase text-muted-foreground tracking-widest mb-4">
-              Voice Profile
-            </div>
-            {[
-              { label: "Warmth", value: 82 },
-              { label: "Flexibility", value: 64 },
-              { label: "Brightness", value: 71 },
-              { label: "Resonance", value: 77 },
-            ].map((m) => (
-              <div key={m.label} className="mb-3 last:mb-0">
-                <div className="flex justify-between text-xs font-mono-display mb-1.5 uppercase text-muted-foreground">
-                  <span>{m.label}</span>
-                  <span>{m.value}%</span>
-                </div>
-                <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-brand" style={{ width: `${m.value}%` }} />
-                </div>
-              </div>
-            ))}
-          </div>
-
+        {/* Genres + artists */}
+        <div className="grid lg:grid-cols-2 gap-6 mb-10">
           <div className="p-6 bg-surface/60 border border-border rounded-3xl">
             <div className="text-xs font-mono-display uppercase text-muted-foreground tracking-widest mb-4">
               Recommended Genres
@@ -148,25 +107,7 @@ function SampleResults() {
           </div>
         </div>
 
-        {/* Songs */}
-        <h2 className="text-2xl font-extrabold mb-6">Karaoke Picks for Your Voice</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-12">
-          {songs.map((s) => (
-            <div key={s.title} className="p-4 bg-surface/40 hover:bg-surface border border-border rounded-2xl flex items-center gap-4 transition-all">
-              <div className="size-14 rounded-xl bg-gradient-brand shrink-0 grid place-items-center text-xl">♪</div>
-              <div className="min-w-0 flex-1">
-                <h5 className="font-bold truncate">{s.title}</h5>
-                <p className="text-xs text-muted-foreground truncate">{s.artist}</p>
-                <div className="mt-1.5 flex items-center gap-2">
-                  <span className={`text-[10px] px-1.5 py-0.5 border rounded font-mono-display ${difficultyStyles[s.difficulty]}`}>
-                    {s.difficulty}
-                  </span>
-                  <span className="text-[10px] text-muted-foreground font-mono-display">{s.match}%</span>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link

@@ -128,23 +128,8 @@ function Index() {
               </span>
             </div>
           </div>
-          <div className="space-y-4 mb-6">
-            {[
-              { label: "Warmth", value: 82, color: "var(--brand)" },
-              { label: "Flexibility", value: 64, color: "var(--brand-secondary)" },
-              { label: "Brightness", value: 71, color: "var(--brand-accent)" },
-            ].map((m) => (
-              <div key={m.label}>
-                <div className="flex justify-between text-xs font-mono-display mb-2 uppercase text-muted-foreground">
-                  <span>{m.label}</span>
-                  <span>{m.value}%</span>
-                </div>
-                <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                  <div className="h-full" style={{ width: `${m.value}%`, background: m.color }} />
-                </div>
-              </div>
-            ))}
-          </div>
+
+
           <div className="text-xs font-mono-display uppercase text-muted-foreground mb-3">
             Recommended Genres
           </div>
