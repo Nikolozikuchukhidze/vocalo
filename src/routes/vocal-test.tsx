@@ -227,9 +227,19 @@ function VocalTest() {
     const t = window.setTimeout(() => {
       stopStream();
       setPhase("done");
+      if (lowNote && highNote) {
+        import("@/components/BrocaloChat").then(({ saveBrocaloVoiceContext }) => {
+          saveBrocaloVoiceContext({
+            lowNote: lowNote.name,
+            highNote: highNote.name,
+            lowFreq: lowNote.freq,
+            highFreq: highNote.freq,
+          });
+        });
+      }
     }, 2500);
     return () => window.clearTimeout(t);
-  }, [phase]);
+  }, [phase, lowNote, highNote]);
 
   const copy = phaseCopy[phase];
   const recording = phase === "low" || phase === "high";
